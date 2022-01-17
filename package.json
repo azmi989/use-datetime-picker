@@ -1,6 +1,6 @@
 {
   "name": "use-datetime-picker",
-  "version": "1.0.1",
+  "version": "1.0.11",
   "description": "&quot;A react hook for creating date and time picker component&quot;",
   "author": "azmi989",
   "license": "MIT",
@@ -18,8 +18,8 @@
     "test:watch": "react-scripts test --env=jsdom",
     "build": "rollup -c && tsc -d --emitDeclarationOnly --noEmit false --declarationDir dist",
     "start": "rollup -c -w",
-    "prepare": "yarn run build",
-    "predeploy": "cd example && yarn install && yarn run build",
+    "prepare": "yarn build",
+    "predeploy": "cd example && {{manager}} install && {{manager}} run build",
     "deploy": "gh-pages -d example/build"
   },
   "dependencies": {},
