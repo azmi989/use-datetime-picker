@@ -7,6 +7,7 @@ import {
 } from "react";
 import { InputPropd } from "./index.types";
 import {
+  formatAMPM,
   formatDate,
   getDateInputValue,
   getDay,
@@ -54,11 +55,7 @@ export const useDateTime = ({
     )
   );
   const [hoursInputValue, setHoursInputValue] = useState(
-    timeFormatArg === "12"
-      ? dateArg.getHours() > 12
-        ? dateArg.getHours() - 12
-        : dateArg.getHours()
-      : dateArg.getHours()
+    formatAMPM(dateArg).hours
   );
   const [minutesInputValue, setMinutesInputValue] = useState(
     dateArg.getMinutes()
@@ -151,7 +148,7 @@ export const useDateTime = ({
   };
   const minutesInputChange = (minute: number) => {
     setMinutesInputValue(minute);
-    updateDate(new Date(date.setMinutes(date.getMinutes())));
+    updateDate(new Date(date.setMinutes(minute)));
   };
   const hoursInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const hour = event.target.value === "" ? 1 : Number(event.target.value);
@@ -234,10 +231,18 @@ export const useDateTime = ({
         : date.getHours()
     );
   }, [date, timeFormatArg]);
-  const increaseHours = () => hoursInputChange((timeProps.hours += 1));
-  const decreaseHours = () => hoursInputChange((timeProps.hours -= 1));
-  const increaseMinutes = () => hoursInputChange((timeProps.minutes += 1));
-  const decreaseMinutes = () => hoursInputChange((timeProps.minutes -= 1));
+  const increaseHours = () => {
+    hoursInputChange(timeProps.hours + 1);
+  };
+  const decreaseHours = () => {
+    hoursInputChange(timeProps.hours - 1);
+  };
+  const increaseMinutes = () => {
+    minutesInputChange(timeProps.minutes + 1);
+  };
+  const decreaseMinutes = () => {
+    minutesInputChange(timeProps.minutes - 1);
+  };
   return {
     date,
     dayProps,

@@ -22,6 +22,10 @@ export const App = () => {
     timeProps,
     toggleMeridiem,
   } = useDateTimePickerContext();
+  // useInterval(() => increaseHours(), 1000);
+  // useEffect(() => {
+  //   console.log(date);
+  // }, [date]);
   return (
     <>
       <div className="calendar">

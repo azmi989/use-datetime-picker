@@ -1,17 +1,29 @@
-import { TimeProps } from '..';
+import { MeridiemType, TimeProps } from "..";
 
-export const getTime = (date: Date, format: '12' | '24'): TimeProps => {
+export const formatAMPM = (date: Date): TimeProps => {
+  let hours = date.getHours();
+  let minutes = Number(date.getMinutes());
+  let ampm: MeridiemType = hours >= 12 ? "pm" : "am";
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? Number(`0${minutes}`) : minutes;
   return {
-    hours: date.getHours(),
-    minutes: date.getMinutes(),
-    seconds: date.getSeconds(),
+    hours,
+    minutes,
     ms: date.getMilliseconds(),
+    seconds: date.getSeconds(),
     timeStamp: date.getTime(),
-    meridiem:
-      format === '24'
-        ? undefined
-        : date.getHours() < 12 && date.getMinutes() <= 59
-        ? 'am'
-        : 'pm',
+    meridiem: ampm,
   };
 };
+
+export const getTime = (date: Date, format: "12" | "24"): TimeProps =>
+  format === "24"
+    ? {
+        hours: date.getHours(),
+        minutes: date.getMinutes(),
+        seconds: date.getSeconds(),
+        ms: date.getMilliseconds(),
+        timeStamp: date.getTime(),
+      }
+    : formatAMPM(date);

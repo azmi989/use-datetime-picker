@@ -10,8 +10,8 @@
   "dependencies": {
     "react": "link:../node_modules/react",
     "react-dom": "^17.0.2",
-    "use-datetime-picker": "link: ..",
-    "usehooks-ts": "^2.2.1"
+    "usehooks-ts": "^2.2.1",
+    "use-datetime-picker": "link: .."
   },
   "devDependencies": {
     "@types/react": "^17.0.33",
