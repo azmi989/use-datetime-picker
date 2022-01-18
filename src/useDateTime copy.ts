@@ -7,6 +7,8 @@ import {
 } from "react";
 import { InputPropd } from "./index.types";
 import {
+  addOnes,
+  addZerosToYear,
   formatDate,
   getDateInputValue,
   getDay,
@@ -103,33 +105,77 @@ export const useDateTime = ({
   const goToDay = (date: Date) => {
     if (date.getDate() > monthProps.numberOfDays) {
       console.error(`${date.getDate()} is not valid for this month`);
-      goToDay(new Date(date.setDate(date.getDate() - 1)));
+      goToDay(
+        new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate() - 1,
+          date.getHours(),
+          date.getMinutes()
+        )
+      );
     } else {
       updateDate(date);
     }
   };
-  const goToYear = (year: number) =>
-    updateDate(new Date(date.setFullYear(year)));
+  const goToYear = (year: number) => {
+    goToDay(
+      new Date(
+        year,
+        date.getMonth(),
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes()
+      )
+    );
+  };
   const goToMonth = (month: number) => {
-    updateDate(new Date(date.setMonth(month - 1)));
+    goToDay(
+      new Date(
+        date.getFullYear(),
+        month - 1,
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes()
+      )
+    );
   };
   const goToNextYear = () => {
-    yearProps.year !== maxYear ? goToYear(yearProps.nextYear) : undefined;
+    if (yearProps.year !== maxYear) {
+      goToYear(yearProps.nextYear);
+    }
   };
   const goToPrevYear = () => {
-    yearProps.year !== minYear ? goToYear(yearProps.prevYear) : undefined;
+    if (yearProps.year !== minYear) {
+      goToYear(yearProps.prevYear);
+    }
   };
   const goToNextMonth = () => {
-    monthProps.monthNumber === 12
-      ? goToNextYear()
-      : goToMonth(monthProps.nextMonthNumber);
+    if (monthProps.monthNumber === 12) {
+      goToNextYear();
+    } else {
+      goToMonth(monthProps.nextMonthNumber);
+    }
   };
   const goToPrevMonth = () => {
-    monthProps.monthNumber === 1
-      ? goToPrevYear()
-      : goToMonth(monthProps.prevMonthNumber);
+    if (monthProps.monthNumber === 1) {
+      goToPrevYear();
+    } else {
+      goToMonth(monthProps.prevMonthNumber);
+    }
   };
-  const selectDay = (day: number) => goToDay(new Date(date.setDate(day)));
+  const selectDay = (day: number) =>
+    goToDay(
+      new Date(
+        yearProps.year,
+        monthProps.monthNumber - 1,
+        day,
+        timeFormatArg === "12" && timeProps.hours >= 12
+          ? timeProps.hours + 12
+          : timeProps.hours,
+        timeProps.minutes
+      )
+    );
 
   const getDateFromInputEvent = (event: string) =>
     event.split("/").map((item) => parseInt(item));
@@ -142,19 +188,54 @@ export const useDateTime = ({
   const handelDateInputBlur = (event: FocusEvent<HTMLInputElement>) => {
     const [day, month, year] = getDateFromInputEvent(event.target.value);
     setDateInputValue(getDateInputValue(year, month, day));
-    updateDate(new Date(date.setFullYear(year, month, day)));
+    updateDate(
+      new Date(
+        addZerosToYear(year),
+        addOnes(month) - 1,
+        addOnes(day),
+        date.getHours(),
+        date.getHours()
+      )
+    );
     onDateInputBlur && onDateInputBlur(event);
   };
   const hoursInputChange = (hour: number) => {
-    setHoursInputValue(hour);
-    updateDate(new Date(date.setHours(hour)));
+    setHoursInputValue((prev) =>
+      timeFormatArg === "12"
+        ? prev > 12 || prev <= 1
+          ? prev
+          : hour
+        : prev > 23 || prev <= 0
+        ? prev
+        : hour
+    );
+    updateDate(
+      new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        hour,
+        date.getMinutes()
+      )
+    );
   };
   const minutesInputChange = (minute: number) => {
-    setMinutesInputValue(minute);
-    updateDate(new Date(date.setMinutes(date.getMinutes())));
+    setMinutesInputValue((prev) =>
+      minute <= 59 || minute >= 0 ? minute : prev
+    );
+    updateDate(
+      new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        date.getHours(),
+        minute
+      )
+    );
   };
   const hoursInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const hour = event.target.value === "" ? 1 : Number(event.target.value);
+
     hoursInputChange(hour);
     onHoursInputChange && onHoursInputChange(event);
   };
@@ -174,18 +255,17 @@ export const useDateTime = ({
     onMinutesInputBlur && onMinutesInputBlur(event);
   };
   const toggleMeridiem = () =>
-    timeFormatArg === "12"
-      ? updateDate(
-          new Date(
-            date.setHours(
-              timeProps.meridiem === "pm"
-                ? date.getHours() - 12
-                : date.getHours() + 12
-            )
-          )
-        )
-      : undefined;
-
+    updateDate(
+      new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        timeProps.meridiem === "pm"
+          ? date.getHours() - 12
+          : date.getHours() + 12,
+        date.getMinutes()
+      )
+    );
   const inputsProps: InputPropd = {
     hours: {
       min: timeFormatArg === "12" ? 1 : 0,
@@ -270,6 +350,5 @@ export const useDateTime = ({
     decreaseHours,
     increaseMinutes,
     decreaseMinutes,
-    toggleMeridiem,
   };
 };

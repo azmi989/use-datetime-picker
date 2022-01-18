@@ -115,10 +115,12 @@ export const DateTimePickerContext = createContext<DateTimePickerContexProps>({
   goToYear: () => {
     return;
   },
-  // onChange: () => {
-  //   return;
-  // },
   pickClockArrow: "hours",
+  increaseHours: () => {},
+  decreaseHours: () => {},
+  increaseMinutes: () => {},
+  decreaseMinutes: () => {},
+  toggleMeridiem: () => {},
 });
 
 export const DateTimePickerContextProvider = ({

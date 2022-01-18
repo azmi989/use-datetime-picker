@@ -1,25 +1,23 @@
 {
-  "name": "use-datetime-picker-example",
-  "homepage": "https://azzmiii989.github.io/use-datetime-picker",
+  "name": "example",
   "version": "0.0.0",
   "license": "MIT",
-  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "react": "link:../node_modules/react",
-    "react-dom": "^16.9.0",
-    "react-scripts": "^3.0.1",
-    "use-datetime-picker": "link:.."
+    "react-dom": "^17.0.2",
+    "use-datetime-picker": "link: ..",
+    "usehooks-ts": "^2.2.1"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "devDependencies": {
+    "@types/react": "^17.0.33",
+    "@types/react-dom": "^17.0.10",
+    "@vitejs/plugin-react": "^1.0.7",
+    "typescript": "^4.4.4",
+    "vite": "^2.7.2"
+  }
 }
