@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import { DateTimeHookProps } from './index.types';
-import { DateTimePickerContexProvider } from './DateTimePickerContex';
-import { useDateTime } from './useDateTime';
+import React, { FC } from "react";
+import { DateTimeHookProps } from "./index.types";
+import { DateTimePickerContextProvider } from "./DateTimePickerContext";
+import { useDateTime } from "./useDateTime";
 
 export const DateTimeProvider: FC<DateTimeHookProps> = ({
   children,
@@ -9,8 +9,8 @@ export const DateTimeProvider: FC<DateTimeHookProps> = ({
 }) => {
   const dateTime = useDateTime(props);
   return (
-    <DateTimePickerContexProvider {...dateTime}>
+    <DateTimePickerContextProvider {...dateTime}>
       {children}
-    </DateTimePickerContexProvider>
+    </DateTimePickerContextProvider>
   );
 };

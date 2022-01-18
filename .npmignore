@@ -1,0 +1,11 @@
+*.log
+.DS_Store
+.github
+node_modules
+src
+example
+test
+.travis.yml
+rollup.config.js
+tsconfig.json
+tsconfig.test.json

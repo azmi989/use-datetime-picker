@@ -1,16 +1,16 @@
-import React, { createContext, FC, useMemo } from 'react';
-import { DateTimePickerContexProps } from './index.types';
+import React, { createContext, ReactNode, useMemo } from "react";
+import { DateTimePickerContexProps } from "./index.types";
 
-export const DateTimePickerContex = createContext<DateTimePickerContexProps>({
+export const DateTimePickerContext = createContext<DateTimePickerContexProps>({
   dateArg: new Date(),
-  dateFormatArg: 'YYYY, MMMM DDDD',
-  langArg: 'default',
-  timeFormatArg: '12',
+  dateFormatArg: "YYYY, MMMM DDDD",
+  langArg: "default",
+  timeFormatArg: "12",
   date: new Date(),
   monthProps: {
-    month: '',
+    month: "",
     monthNumber: 0,
-    monthShort: '',
+    monthShort: "",
     nextMonthNumber: 0,
     nextMonthNumberOfDays: 0,
     numberOfDays: 0,
@@ -23,9 +23,9 @@ export const DateTimePickerContex = createContext<DateTimePickerContexProps>({
   setPickClockArrow: () => {},
   dayProps: {
     date: 0,
-    day: '',
+    day: "",
     dayNumberInWeek: 0,
-    dayShort: '',
+    dayShort: "",
     month: 0,
     week: 0,
   },
@@ -34,7 +34,7 @@ export const DateTimePickerContex = createContext<DateTimePickerContexProps>({
       onBlur: () => {
         return;
       },
-      value: '',
+      value: "",
       onChange: () => {
         return;
       },
@@ -76,7 +76,7 @@ export const DateTimePickerContex = createContext<DateTimePickerContexProps>({
   goToNextMonth: () => {
     return;
   },
-  formatedDate: '',
+  formatedDate: "",
   prevYearMaxed: false,
   setMaxYear: () => {
     return;
@@ -90,7 +90,7 @@ export const DateTimePickerContex = createContext<DateTimePickerContexProps>({
     ms: 0,
     seconds: 0,
     timeStamp: 0,
-    meridiem: 'am',
+    meridiem: "am",
   },
   updateDate: () => {
     return;
@@ -118,17 +118,17 @@ export const DateTimePickerContex = createContext<DateTimePickerContexProps>({
   // onChange: () => {
   //   return;
   // },
-  pickClockArrow: 'hours',
+  pickClockArrow: "hours",
 });
 
-export const DateTimePickerContexProvider: FC<DateTimePickerContexProps> = ({
+export const DateTimePickerContextProvider = ({
   children,
   ...values
-}) => {
+}: { children?: ReactNode } & DateTimePickerContexProps) => {
   const memoValue = useMemo(() => ({ ...values }), [values]);
   return (
-    <DateTimePickerContex.Provider value={memoValue}>
+    <DateTimePickerContext.Provider value={memoValue}>
       {children}
-    </DateTimePickerContex.Provider>
+    </DateTimePickerContext.Provider>
   );
 };
