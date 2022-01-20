@@ -34,7 +34,7 @@ export const App = () => {
             <button onClick={goToPrevMonth}>{"<"}</button>
             <input {...inputsProps.date} />
             <div className="numberInput">
-              <input {...inputsProps.hours} />
+              <input type="number" {...inputsProps.hours} />
               <button className="increaseBtn" onClick={increaseHours}>
                 +
               </button>
@@ -43,7 +43,7 @@ export const App = () => {
               </button>
             </div>
             <div className="numberInput">
-              <input {...inputsProps.minutes} />
+              <input type="number" {...inputsProps.minutes} />
               <button className="increaseBtn" onClick={increaseMinutes}>
                 +
               </button>
@@ -84,7 +84,7 @@ export const App = () => {
 };
 
 ReactDOM.render(
-  <DateTimeProvider dateArg={new Date(1989, 8, 10, 19)} timeFormatArg="12">
+  <DateTimeProvider dateArg={new Date(1989, 8, 10, 0, 0)} timeFormatArg="12">
     {/* <React.StrictMode> */}
     <App />
     {/* </React.StrictMode> */}

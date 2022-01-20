@@ -5,7 +5,7 @@ export { getDay } from "./getDay";
 export { getMonth } from "./getMonth";
 export { getMonthDays } from "./getMonthDays";
 export { getNumberOfDays } from "./getNumberOfDays";
-export { getTime, formatAMPM } from "./getTime";
+export { getTime, getHoursFormat } from "./getTime";
 export { getWeekDays } from "./getWeekDays";
 export { getWeekNumber } from "./getWeekNumber";
 export { getYear } from "./getYear";

@@ -1,2 +1,4 @@
-export const getDateInputValue = (year: number, month: number, day: number) =>
-  `${day ? day : ''}/${month ? month : ''}/${year ? year : '1900'}`;
+export const getDateInputValue = (date: Date) =>
+  `${date.getDate() ? date.getDate() : ""}/${
+    date.getMonth() + 1 ? date.getMonth() + 1 : ""
+  }/${date.getFullYear() ? date.getFullYear() : "1900"}`;

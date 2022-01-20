@@ -1,13 +1,6 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useState,
-  FocusEvent,
-} from "react";
+import { ChangeEvent, useCallback, useState, FocusEvent } from "react";
 import { InputPropd } from "./index.types";
 import {
-  formatAMPM,
   formatDate,
   getDateInputValue,
   getDay,
@@ -48,17 +41,13 @@ export const useDateTime = ({
     formatDate(dateArg, dateFormatArg, langArg)
   );
   const [dateInputValue, setDateInputValue] = useState(
-    getDateInputValue(
-      dateArg.getFullYear(),
-      dateArg.getMonth() + 1,
-      dateArg.getDate()
-    )
+    getDateInputValue(dateArg)
   );
   const [hoursInputValue, setHoursInputValue] = useState(
-    formatAMPM(dateArg).hours
+    getTime(dateArg, timeFormatArg).hours
   );
   const [minutesInputValue, setMinutesInputValue] = useState(
-    dateArg.getMinutes()
+    getTime(dateArg, timeFormatArg).minutes
   );
   const [maxYear, setMaxYear] = useState(dateArg.getFullYear() + 10);
   const [minYear, setMinYear] = useState(dateArg.getFullYear() - 70);
@@ -85,6 +74,9 @@ export const useDateTime = ({
       setPrevYearMaxed(yearProps.prevYear === newDateArg?.getFullYear() - 1);
       setWeekDays(getWeekDays(newDateArg, weekDays, langArg));
       setYearsList(getYearsList(maxYear, minYear));
+      setDateInputValue(getDateInputValue(newDateArg));
+      setHoursInputValue(getTime(newDateArg, timeFormatArg).hours);
+      setMinutesInputValue(getTime(newDateArg, timeFormatArg).minutes);
     },
     [
       dateFormatArg,
@@ -127,46 +119,66 @@ export const useDateTime = ({
       : goToMonth(monthProps.prevMonthNumber);
   };
   const selectDay = (day: number) => goToDay(new Date(date.setDate(day)));
-
+  const getHour = (hour: number) => {
+    if (timeFormatArg === "24") return hour;
+    else {
+      if (timeProps.meridiem === "pm") {
+        if (hour === 12) return 0;
+      }
+    }
+  };
   const getDateFromInputEvent = (event: string) =>
     event.split("/").map((item) => parseInt(item));
-
-  const handelDateInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const [day, month, year] = getDateFromInputEvent(event.target.value);
-    setDateInputValue(getDateInputValue(year, month, day));
-    onDateInputChange && onDateInputChange(event);
-  };
-  const handelDateInputBlur = (event: FocusEvent<HTMLInputElement>) => {
-    const [day, month, year] = getDateFromInputEvent(event.target.value);
-    setDateInputValue(getDateInputValue(year, month, day));
-    updateDate(new Date(date.setFullYear(year, month, day)));
-    onDateInputBlur && onDateInputBlur(event);
+  const handelDateInputChangeHandler = (event: string, update?: boolean) => {
+    const [day, month, year] = getDateFromInputEvent(event);
+    setDateInputValue(getDateInputValue(new Date(year, month + 1, day)));
+    update === true
+      ? updateDate(new Date(date.setFullYear(year, month, day)))
+      : null;
   };
   const hoursInputChange = (hour: number) => {
-    setHoursInputValue(hour);
     updateDate(new Date(date.setHours(hour)));
   };
   const minutesInputChange = (minute: number) => {
-    setMinutesInputValue(minute);
     updateDate(new Date(date.setMinutes(minute)));
   };
+  const handelDateInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    handelDateInputChangeHandler(event.target.value);
+    onDateInputChange && onDateInputChange(event);
+  };
+  const handelDateInputBlur = (event: FocusEvent<HTMLInputElement>) => {
+    handelDateInputChangeHandler(event.target.value, true);
+    onDateInputBlur && onDateInputBlur(event);
+  };
+  const hour = (h: number) => {
+    console.log(h);
+
+    if (timeFormatArg === "24") return h;
+    else {
+      if (timeProps.meridiem === "pm") return h + 12;
+      else {
+        if (h === 12) return 0;
+        else return h;
+      }
+    }
+  };
   const hoursInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const hour = event.target.value === "" ? 1 : Number(event.target.value);
-    hoursInputChange(hour);
+    const h = event.target.value === "" ? 0 : Number(event.target.value);
+    hoursInputChange(hour(h));
     onHoursInputChange && onHoursInputChange(event);
   };
   const hoursInputBlurHandler = (event: FocusEvent<HTMLInputElement>) => {
-    const hour = event.target.value === "" ? 1 : Number(event.target.value);
+    const hour = event.target.value === "" ? 0 : Number(event.target.value);
     hoursInputChange(hour);
     onHoursInputBlur && onHoursInputBlur(event);
   };
   const minutesInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const minute = event.target.value === "" ? 1 : Number(event.target.value);
+    const minute = event.target.value === "" ? 0 : Number(event.target.value);
     minutesInputChange(minute);
     onMinutesInputChange && onMinutesInputChange(event);
   };
   const minutesInputBlurHandler = (event: FocusEvent<HTMLInputElement>) => {
-    const minute = event.target.value === "" ? 1 : Number(event.target.value);
+    const minute = event.target.value === "" ? 0 : Number(event.target.value);
     minutesInputChange(minute);
     onMinutesInputBlur && onMinutesInputBlur(event);
   };
@@ -218,30 +230,17 @@ export const useDateTime = ({
       },
     },
   };
-  useEffect(() => {
-    setDateInputValue(
-      getDateInputValue(date.getFullYear(), date.getMonth() + 1, date.getDate())
-    );
-    setMinutesInputValue(date.getMinutes());
-    setHoursInputValue(
-      timeFormatArg === "12"
-        ? date.getHours() > 12
-          ? date.getHours() - 12
-          : date.getHours()
-        : date.getHours()
-    );
-  }, [date, timeFormatArg]);
   const increaseHours = () => {
-    hoursInputChange(timeProps.hours + 1);
+    hoursInputChange(date.getHours() + 1);
   };
   const decreaseHours = () => {
-    hoursInputChange(timeProps.hours - 1);
+    hoursInputChange(date.getHours() - 1);
   };
   const increaseMinutes = () => {
-    minutesInputChange(timeProps.minutes + 1);
+    minutesInputChange(date.getMinutes() + 1);
   };
   const decreaseMinutes = () => {
-    minutesInputChange(timeProps.minutes - 1);
+    minutesInputChange(date.getMinutes() - 1);
   };
   return {
     date,
