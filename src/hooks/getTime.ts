@@ -1,3 +1,4 @@
+import { LanguagesType } from "..";
 import { TimeProps, MeridiemType } from "../index.types";
 
 export const getHoursFormat = (hours: number, meridiem?: MeridiemType) => {
@@ -9,14 +10,28 @@ export const getHoursFormat = (hours: number, meridiem?: MeridiemType) => {
   } else return hours;
 };
 
-export const getTime = (date: Date, format: "12" | "24"): TimeProps => ({
-  hours: getHoursFormat(
-    date.getHours(),
-    format === "12" ? (date.getHours() >= 12 ? "pm" : "am") : undefined
-  ),
+export const getTime = (
+  date: Date,
+  format: "12" | "24",
+  lang: LanguagesType
+): TimeProps => ({
+  hours:
+    format === "24"
+      ? date.getHours()
+      : Number(
+          date
+            .toLocaleString(lang, { hour12: true, hour: "numeric" })
+            .split(" ")[0]
+        ),
   minutes: date.getMinutes(),
   seconds: date.getSeconds(),
   ms: date.getMilliseconds(),
   timeStamp: date.getTime(),
-  meridiem: date.getHours() >= 12 ? "pm" : "am",
+  meridiem:
+    format === "12"
+      ? (date
+          .toLocaleString(lang, { hour12: true, hour: "numeric" })
+          .split(" ")[1]
+          .toLowerCase() as MeridiemType)
+      : undefined,
 });
