@@ -1,6 +1,6 @@
 {
   "name": "use-datetime-picker",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "A react hook for creating date and time picker component",
   "author": "azmi989",
   "license": "MIT",
