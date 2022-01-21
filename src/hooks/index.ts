@@ -3,6 +3,7 @@ export { formatDate } from "./formatDate";
 export { getDateInputValue } from "./getDateInputValue";
 export { getDay } from "./getDay";
 export { getMonth } from "./getMonth";
+export { getMonthDaysFullList } from "./getMonthDaysFullList";
 export { getMonthDays } from "./getMonthDays";
 export { getNumberOfDays } from "./getNumberOfDays";
 export { getTime, getHoursFormat } from "./getTime";

@@ -1,12 +1,18 @@
-import { ChangeEvent, useCallback, useState, FocusEvent } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useState,
+  FocusEvent,
+  useRef,
+  useEffect,
+} from "react";
 import { InputPropd } from "./index.types";
 import {
   formatDate,
   getDateInputValue,
   getDay,
   getMonth,
-  getMonthDays,
-  getNumberOfDays,
+  getMonthDaysFullList,
   getTime,
   getWeekDays,
   getYear,
@@ -55,15 +61,19 @@ export const useDateTime = ({
   const [minYear, setMinYear] = useState(dateArg.getFullYear() - 70);
   const [nextYearMaxed, setNextYearMaxed] = useState(false);
   const [prevYearMaxed, setPrevYearMaxed] = useState(false);
-  const getMonthDaysArray = useCallback(
-    () => Array.from(getMonthDays(date, getNumberOfDays(date), langArg)),
-    [date, langArg]
+  const [monthDays, setMonthDays] = useState(
+    getMonthDaysFullList(dateArg, langArg)
   );
+  useEffect(() => {
+    setMonthDays(getMonthDaysFullList(date, langArg));
+  }, [date, langArg]);
+
   const [weekDays, setWeekDays] = useState(
     getWeekDays(dateArg, Array.from({ length: 7 }), langArg)
   );
   const [yearsList, setYearsList] = useState(getYearsList(maxYear, minYear));
-
+  const hoursInputRef = useRef<HTMLInputElement>(null);
+  const minutesInputRef = useRef<HTMLInputElement>(null);
   const updateDate = useCallback(
     (newDateArg: Date) => {
       setDate(newDateArg);
@@ -105,10 +115,16 @@ export const useDateTime = ({
     updateDate(new Date(date.setMonth(month - 1)));
   };
   const goToNextYear = () => {
-    yearProps.year !== maxYear ? goToYear(yearProps.nextYear) : undefined;
+    if (yearProps.year !== maxYear) {
+      goToMonth(1);
+      goToYear(yearProps.nextYear);
+    }
   };
   const goToPrevYear = () => {
-    yearProps.year !== minYear ? goToYear(yearProps.prevYear) : undefined;
+    if (yearProps.year !== minYear) {
+      goToMonth(12);
+      goToYear(yearProps.prevYear);
+    }
   };
   const goToNextMonth = () => {
     monthProps.monthNumber === 12
@@ -185,9 +201,15 @@ export const useDateTime = ({
 
   const inputsProps: InputPropd = {
     hours: {
+      name: "hoursInput",
+      label: "Hours",
       min: timeFormatArg === "12" ? 1 : 0,
       max: timeFormatArg === "12" ? 12 : 23,
       value: hoursInputValue,
+      ref: hoursInputRef,
+      buttonProps: {
+        onClick: () => hoursInputRef.current?.click(),
+      },
       onChange: hoursInputChangeHandler,
       onBlur: hoursInputBlurHandler,
       onFocus: (e) => {
@@ -196,9 +218,15 @@ export const useDateTime = ({
       },
     },
     minutes: {
+      name: "minutesInput",
+      label: "Minutes",
       min: 0,
       max: 59,
       value: minutesInputValue,
+      ref: minutesInputRef,
+      buttonProps: {
+        onClick: () => minutesInputRef.current?.click(),
+      },
       onChange: minutesInputChangeHandler,
       onBlur: minutesInputBlurHandler,
       onFocus: (e) => {
@@ -208,6 +236,7 @@ export const useDateTime = ({
     },
     date: {
       value: dateInputValue,
+      name: "dateInput",
       onChange: handelDateInputChange,
       onBlur: handelDateInputBlur,
     },
@@ -218,11 +247,14 @@ export const useDateTime = ({
       },
     },
   };
-  const increaseHours = () => hoursInputChange(date.getHours() + 1);
-  const decreaseHours = () => hoursInputChange(date.getHours() - 1);
-  const increaseMinutes = () => minutesInputChange(date.getMinutes() + 1);
-
-  const decreaseMinutes = () => minutesInputChange(date.getMinutes() - 1);
+  // const increaseHours = () =>
+  //   updateDate(new Date(date.setHours(date.getHours() + 1)));
+  // const decreaseHours = () =>
+  //   updateDate(new Date(date.setHours(date.getHours() - 1)));
+  // const increaseMinutes = () =>
+  //   updateDate(new Date(date.setMinutes(date.getMinutes() + 1)));
+  // const decreaseMinutes = () =>
+  //   updateDate(new Date(date.setMinutes(date.getMinutes() - 1)));
 
   return {
     date,
@@ -245,17 +277,17 @@ export const useDateTime = ({
     goToPrevYear,
     inputsProps,
     selectDay,
-    getMonthDaysArray,
+    monthDays,
     updateDate,
     goToYear,
     goToMonth,
     pickClockArrow,
     dateArg,
     setPickClockArrow,
-    increaseHours,
-    decreaseHours,
-    increaseMinutes,
-    decreaseMinutes,
+    // increaseHours,
+    // decreaseHours,
+    // increaseMinutes,
+    // decreaseMinutes,
     toggleMeridiem,
   };
 };

@@ -11,21 +11,17 @@ export const App = () => {
     goToNextMonth,
     inputsProps,
     weekDays,
-    getMonthDaysArray,
+    monthDays,
     monthProps,
     selectDay,
     date,
-    decreaseHours,
-    decreaseMinutes,
-    increaseHours,
-    increaseMinutes,
     timeProps,
     toggleMeridiem,
   } = useDateTimePickerContext();
   // useInterval(() => increaseHours(), 1000);
-  // useEffect(() => {
-  //   console.log(date);
-  // }, [date]);
+  useEffect(() => {
+    // console.log(getMonthDaysArray());
+  }, [date]);
   return (
     <>
       <div className="calendar">
@@ -35,19 +31,31 @@ export const App = () => {
             <input {...inputsProps.date} />
             <div className="numberInput">
               <input type="number" {...inputsProps.hours} />
-              <button className="increaseBtn" onClick={increaseHours}>
+              <button
+                className="increaseBtn"
+                {...inputsProps.hours.buttonProps}
+              >
                 +
               </button>
-              <button className="decreaseBtn" onClick={decreaseHours}>
+              <button
+                className="decreaseBtn"
+                {...inputsProps.hours.buttonProps}
+              >
                 -
               </button>
             </div>
             <div className="numberInput">
               <input type="number" {...inputsProps.minutes} />
-              <button className="increaseBtn" onClick={increaseMinutes}>
+              <button
+                className="increaseBtn"
+                {...inputsProps.minutes.buttonProps}
+              >
                 +
               </button>
-              <button className="decreaseBtn" onClick={decreaseMinutes}>
+              <button
+                className="decreaseBtn"
+                {...inputsProps.minutes.buttonProps}
+              >
                 -
               </button>
             </div>
@@ -61,7 +69,7 @@ export const App = () => {
           </div>
         </div>
         <div className="calendar-body">
-          {getMonthDaysArray().map((day) => (
+          {monthDays.map((day) => (
             <button
               disabled={day.month !== monthProps.monthNumber}
               onClick={() => selectDay(day.date)}

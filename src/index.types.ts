@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   ComponentProps,
   FocusEvent,
+  ForwardedRef,
   MouseEvent,
   ReactNode,
 } from "react";
@@ -200,16 +201,25 @@ export type DateTimeHookProps = {
 export type DateTimeHookReturnType = ReturnType<typeof useDateTime>;
 export type InputPropd = {
   hours: {
+    name: string;
     min: number;
     max: number;
     value: number;
+    label: string;
+    buttonProps?: ComponentProps<"button">;
+    ref?: ForwardedRef<HTMLInputElement>;
   } & Pick<ComponentProps<"input">, "onChange" | "onBlur" | "onFocus">;
   minutes: {
+    name: string;
     min: number;
     max: number;
     value: number;
+    label: string;
+    buttonProps?: ComponentProps<"button">;
+    ref?: ForwardedRef<HTMLInputElement>;
   } & Pick<ComponentProps<"input">, "onChange" | "onBlur" | "onFocus">;
   date: {
+    name: string;
     value: string;
   } & Pick<ComponentProps<"input">, "onChange" | "onBlur">;
   meridiem: Pick<ComponentProps<"button">, "onClick">;
