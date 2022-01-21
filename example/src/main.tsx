@@ -11,7 +11,7 @@ export const App = () => {
     goToNextMonth,
     inputsProps,
     weekDays,
-    monthDays,
+    getMonthDaysArray,
     monthProps,
     selectDay,
     date,
@@ -31,33 +31,9 @@ export const App = () => {
             <input {...inputsProps.date} />
             <div className="numberInput">
               <input type="number" {...inputsProps.hours} />
-              <button
-                className="increaseBtn"
-                {...inputsProps.hours.buttonProps}
-              >
-                +
-              </button>
-              <button
-                className="decreaseBtn"
-                {...inputsProps.hours.buttonProps}
-              >
-                -
-              </button>
             </div>
             <div className="numberInput">
               <input type="number" {...inputsProps.minutes} />
-              <button
-                className="increaseBtn"
-                {...inputsProps.minutes.buttonProps}
-              >
-                +
-              </button>
-              <button
-                className="decreaseBtn"
-                {...inputsProps.minutes.buttonProps}
-              >
-                -
-              </button>
             </div>
             <button onClick={toggleMeridiem}>{timeProps.meridiem}</button>
             <button onClick={goToNextMonth}>{">"}</button>
@@ -69,7 +45,7 @@ export const App = () => {
           </div>
         </div>
         <div className="calendar-body">
-          {monthDays.map((day) => (
+          {getMonthDaysArray().map((day) => (
             <button
               disabled={day.month !== monthProps.monthNumber}
               onClick={() => selectDay(day.date)}

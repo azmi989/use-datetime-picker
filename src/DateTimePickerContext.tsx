@@ -110,7 +110,7 @@ export const DateTimePickerContext = createContext<DateTimePickerContexProps>({
     yearShort: 0,
   },
   yearsList: [],
-  monthDays: [],
+  getMonthDaysArray: () => [],
   selectDay: () => {
     return;
   },

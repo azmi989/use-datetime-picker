@@ -2,7 +2,6 @@ import {
   ChangeEvent,
   ComponentProps,
   FocusEvent,
-  ForwardedRef,
   MouseEvent,
   ReactNode,
 } from "react";
@@ -206,8 +205,6 @@ export type InputPropd = {
     max: number;
     value: number;
     label: string;
-    buttonProps?: ComponentProps<"button">;
-    ref?: ForwardedRef<HTMLInputElement>;
   } & Pick<ComponentProps<"input">, "onChange" | "onBlur" | "onFocus">;
   minutes: {
     name: string;
@@ -215,8 +212,6 @@ export type InputPropd = {
     max: number;
     value: number;
     label: string;
-    buttonProps?: ComponentProps<"button">;
-    ref?: ForwardedRef<HTMLInputElement>;
   } & Pick<ComponentProps<"input">, "onChange" | "onBlur" | "onFocus">;
   date: {
     name: string;

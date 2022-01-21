@@ -1,11 +1,4 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useState,
-  FocusEvent,
-  useRef,
-  useEffect,
-} from "react";
+import { ChangeEvent, useCallback, useState, FocusEvent } from "react";
 import { InputPropd } from "./index.types";
 import {
   formatDate,
@@ -61,19 +54,14 @@ export const useDateTime = ({
   const [minYear, setMinYear] = useState(dateArg.getFullYear() - 70);
   const [nextYearMaxed, setNextYearMaxed] = useState(false);
   const [prevYearMaxed, setPrevYearMaxed] = useState(false);
-  const [monthDays, setMonthDays] = useState(
-    getMonthDaysFullList(dateArg, langArg)
+  const getMonthDaysArray = useCallback(
+    () => Array.from(getMonthDaysFullList(date, langArg)),
+    [date, langArg]
   );
-  useEffect(() => {
-    setMonthDays(getMonthDaysFullList(date, langArg));
-  }, [date, langArg]);
-
   const [weekDays, setWeekDays] = useState(
     getWeekDays(dateArg, Array.from({ length: 7 }), langArg)
   );
   const [yearsList, setYearsList] = useState(getYearsList(maxYear, minYear));
-  const hoursInputRef = useRef<HTMLInputElement>(null);
-  const minutesInputRef = useRef<HTMLInputElement>(null);
   const updateDate = useCallback(
     (newDateArg: Date) => {
       setDate(newDateArg);
@@ -101,42 +89,51 @@ export const useDateTime = ({
       yearProps.prevYear,
     ]
   );
-  const goToDay = (date: Date) => {
-    if (date.getDate() > monthProps.numberOfDays) {
-      console.error(`${date.getDate()} is not valid for this month`);
-      goToDay(new Date(date.setDate(date.getDate() - 1)));
-    } else {
-      updateDate(date);
-    }
-  };
-  const goToYear = (year: number) =>
-    updateDate(new Date(date.setFullYear(year)));
-  const goToMonth = (month: number) => {
-    updateDate(new Date(date.setMonth(month - 1)));
-  };
-  const goToNextYear = () => {
+  const goToDay = useCallback(
+    (date: Date) => {
+      if (date.getDate() > monthProps.numberOfDays) {
+        console.error(`${date.getDate()} is not valid for this month`);
+        goToDay(new Date(date.setDate(date.getDate() - 1)));
+      } else {
+        updateDate(date);
+      }
+    },
+    [date]
+  );
+  const goToYear = useCallback(
+    (year: number) => updateDate(new Date(date.setFullYear(year))),
+    [date]
+  );
+  const goToMonth = useCallback(
+    (month: number) => updateDate(new Date(date.setMonth(month - 1))),
+    [date]
+  );
+  const goToNextYear = useCallback(() => {
     if (yearProps.year !== maxYear) {
       goToMonth(1);
       goToYear(yearProps.nextYear);
     }
-  };
-  const goToPrevYear = () => {
+  }, [date]);
+  const goToPrevYear = useCallback(() => {
     if (yearProps.year !== minYear) {
       goToMonth(12);
       goToYear(yearProps.prevYear);
     }
-  };
-  const goToNextMonth = () => {
+  }, [date]);
+  const goToNextMonth = useCallback(() => {
     monthProps.monthNumber === 12
       ? goToNextYear()
       : goToMonth(monthProps.nextMonthNumber);
-  };
-  const goToPrevMonth = () => {
+  }, [date]);
+  const goToPrevMonth = useCallback(() => {
     monthProps.monthNumber === 1
       ? goToPrevYear()
       : goToMonth(monthProps.prevMonthNumber);
-  };
-  const selectDay = (day: number) => goToDay(new Date(date.setDate(day)));
+  }, [date]);
+  const selectDay = useCallback(
+    (day: number) => goToDay(new Date(date.setDate(day))),
+    [date]
+  );
   const getDateFromInputEvent = (event: string) =>
     event.split("/").map((item) => parseInt(item));
   const handelDateInputChangeHandler = (event: string, update?: boolean) => {
@@ -206,10 +203,6 @@ export const useDateTime = ({
       min: timeFormatArg === "12" ? 1 : 0,
       max: timeFormatArg === "12" ? 12 : 23,
       value: hoursInputValue,
-      ref: hoursInputRef,
-      buttonProps: {
-        onClick: () => hoursInputRef.current?.click(),
-      },
       onChange: hoursInputChangeHandler,
       onBlur: hoursInputBlurHandler,
       onFocus: (e) => {
@@ -223,10 +216,6 @@ export const useDateTime = ({
       min: 0,
       max: 59,
       value: minutesInputValue,
-      ref: minutesInputRef,
-      buttonProps: {
-        onClick: () => minutesInputRef.current?.click(),
-      },
       onChange: minutesInputChangeHandler,
       onBlur: minutesInputBlurHandler,
       onFocus: (e) => {
@@ -247,15 +236,6 @@ export const useDateTime = ({
       },
     },
   };
-  // const increaseHours = () =>
-  //   updateDate(new Date(date.setHours(date.getHours() + 1)));
-  // const decreaseHours = () =>
-  //   updateDate(new Date(date.setHours(date.getHours() - 1)));
-  // const increaseMinutes = () =>
-  //   updateDate(new Date(date.setMinutes(date.getMinutes() + 1)));
-  // const decreaseMinutes = () =>
-  //   updateDate(new Date(date.setMinutes(date.getMinutes() - 1)));
-
   return {
     date,
     dayProps,
@@ -277,7 +257,7 @@ export const useDateTime = ({
     goToPrevYear,
     inputsProps,
     selectDay,
-    monthDays,
+    getMonthDaysArray,
     updateDate,
     goToYear,
     goToMonth,

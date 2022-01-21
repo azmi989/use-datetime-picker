@@ -30,7 +30,9 @@ export const getMonthDaysFullList = (date: Date, lang: LanguagesType) => {
           getMonthDays(nextDate, getNumberOfDays(nextDate), lang)
         ).slice(0, 7 - lastDay);
 
-  return lastMonthLastNDays
-    .concat(Array.from(getMonthDays(date, getNumberOfDays(date), lang)))
-    .concat(nextMonthFirstNDays);
+  return Array.from(
+    lastMonthLastNDays
+      .concat(Array.from(getMonthDays(date, getNumberOfDays(date), lang)))
+      .concat(nextMonthFirstNDays)
+  );
 };
