@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { DateTimeProvider } from "use-datetime-picker";
 import "./index.css";
-import { useDateTimePickerContext } from "use-datetime-picker";
 import { useInterval } from "usehooks-ts";
+import {
+  useDateTimePickerContext,
+  DateTimeProvider,
+} from "use-datetime-picker";
 
 export const App = () => {
   const {

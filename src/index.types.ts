@@ -1,10 +1,4 @@
-import {
-  ChangeEvent,
-  ComponentProps,
-  FocusEvent,
-  MouseEvent,
-  ReactNode,
-} from "react";
+import { ComponentProps } from "react";
 import { useDateTime } from "./useDateTime";
 
 export type LanguagesType =
@@ -185,16 +179,6 @@ export type DateTimeHookProps = {
   dateFormatArg?: DateFormatType;
   timeFormatArg?: TimeFormatType;
   langArg?: LanguagesType;
-  onDateInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  onDateInputBlur?: (event: FocusEvent<HTMLInputElement>) => void;
-  onHoursInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  onMinutesInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  onHoursInputBlur?: (event: FocusEvent<HTMLInputElement>) => void;
-  onHoursInputFocus?: (event: FocusEvent<HTMLInputElement>) => void;
-  onMinutesInputBlur?: (event: FocusEvent<HTMLInputElement>) => void;
-  onMinutesInputFocus?: (event: FocusEvent<HTMLInputElement>) => void;
-  onMeridiemButtonClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-  children?: ReactNode;
 };
 
 export type DateTimeHookReturnType = ReturnType<typeof useDateTime>;
@@ -205,14 +189,20 @@ export type InputPropd = {
     max: number;
     value: number;
     label: string;
-  } & Pick<ComponentProps<"input">, "onChange" | "onBlur" | "onFocus">;
+  } & Pick<
+    ComponentProps<"input">,
+    "onChange" | "onBlur" | "onFocus" | "onClick"
+  >;
   minutes: {
     name: string;
     min: number;
     max: number;
     value: number;
     label: string;
-  } & Pick<ComponentProps<"input">, "onChange" | "onBlur" | "onFocus">;
+  } & Pick<
+    ComponentProps<"input">,
+    "onChange" | "onBlur" | "onFocus" | "onClick"
+  >;
   date: {
     name: string;
     value: string;

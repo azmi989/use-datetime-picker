@@ -45,26 +45,13 @@ export const DateTimePickerContext = createContext<DateTimePickerContexProps>({
       min: 0,
       name: "",
       label: "",
-      onBlur: () => {
-        return;
-      },
-      onChange: () => {
-        return;
-      },
       value: 0,
-      onFocus: () => {},
     },
     minutes: {
       max: 59,
       min: 0,
       name: "",
       label: "",
-      onBlur: () => {
-        return;
-      },
-      onChange: () => {
-        return;
-      },
       value: 0,
     },
     meridiem: {},
@@ -121,10 +108,10 @@ export const DateTimePickerContext = createContext<DateTimePickerContexProps>({
     return;
   },
   pickClockArrow: "hours",
-  // increaseHours: () => {},
-  // decreaseHours: () => {},
-  // increaseMinutes: () => {},
-  // decreaseMinutes: () => {},
+  increaseHours: () => {},
+  decreaseHours: () => {},
+  increaseMinutes: () => {},
+  decreaseMinutes: () => {},
   toggleMeridiem: () => {},
 });
 

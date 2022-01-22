@@ -3,11 +3,15 @@ import { getMonthDays } from "./getMonthDays";
 import { LanguagesType } from "../index.types";
 
 export const getMonthDaysFullList = (date: Date, lang: LanguagesType) => {
-  const month = Array.from(getMonthDays(date, getNumberOfDays(date), lang));
+  const currentMonthDays = Array.from(
+    getMonthDays(date, getNumberOfDays(date), lang)
+  );
   const firstDay =
-    month[0].dayNumberInWeek - 1 ? month[0].dayNumberInWeek - 1 : 0;
-  const lastDay = month[getNumberOfDays(date) - 1].dayNumberInWeek
-    ? month[getNumberOfDays(date) - 1].dayNumberInWeek
+    currentMonthDays[0].dayNumberInWeek - 1
+      ? currentMonthDays[0].dayNumberInWeek - 1
+      : 0;
+  const lastDay = currentMonthDays[getNumberOfDays(date) - 1].dayNumberInWeek
+    ? currentMonthDays[getNumberOfDays(date) - 1].dayNumberInWeek
     : 0;
   const prevDate =
     date.getMonth() === 0
@@ -30,9 +34,7 @@ export const getMonthDaysFullList = (date: Date, lang: LanguagesType) => {
           getMonthDays(nextDate, getNumberOfDays(nextDate), lang)
         ).slice(0, 7 - lastDay);
 
-  return Array.from(
-    lastMonthLastNDays
-      .concat(Array.from(getMonthDays(date, getNumberOfDays(date), lang)))
-      .concat(nextMonthFirstNDays)
-  );
+  return lastMonthLastNDays
+    .concat(currentMonthDays)
+    .concat(nextMonthFirstNDays);
 };

@@ -18,15 +18,6 @@ export const useDateTime = ({
   dateFormatArg = "YYYY, MMMM DDDD",
   langArg = "default",
   timeFormatArg = "12",
-  onDateInputBlur,
-  onDateInputChange,
-  onHoursInputBlur,
-  onHoursInputChange,
-  onHoursInputFocus,
-  onMinutesInputBlur,
-  onMinutesInputChange,
-  onMinutesInputFocus,
-  onMeridiemButtonClick,
 }: DateTimeHookProps) => {
   const [date, setDate] = useState(dateArg);
   const [dayProps, setDayProps] = useState(getDay(dateArg, langArg));
@@ -139,49 +130,33 @@ export const useDateTime = ({
   const handelDateInputChangeHandler = (event: string, update?: boolean) => {
     const [day, month, year] = getDateFromInputEvent(event);
     setDateInputValue(getDateInputValue(new Date(year, month + 1, day)));
-    update === true
-      ? updateDate(new Date(date.setFullYear(year, month, day)))
-      : null;
-  };
-  const hoursInputChange = (hour: number) => {
-    updateDate(new Date(date.setHours(hour)));
-  };
-  const minutesInputChange = (minute: number) => {
-    updateDate(new Date(date.setMinutes(minute)));
+    update ? updateDate(new Date(date.setFullYear(year, month, day))) : null;
   };
   const handelDateInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     handelDateInputChangeHandler(event.target.value);
-    onDateInputChange && onDateInputChange(event);
   };
 
   const handelDateInputBlur = (event: FocusEvent<HTMLInputElement>) => {
     handelDateInputChangeHandler(event.target.value, true);
-    onDateInputBlur && onDateInputBlur(event);
   };
 
-  const hoursInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const hoursInputHandler = (
+    event: ChangeEvent<HTMLInputElement> | FocusEvent<HTMLInputElement>
+  ) => {
     const hour = event.target.value === "" ? 0 : Number(event.target.value);
-    hoursInputChange(
-      getTime(new Date(date.setHours(hour)), timeFormatArg, langArg).hours
-    );
-    onHoursInputChange && onHoursInputChange(event);
+    const newHour = getTime(
+      new Date(date.setHours(hour)),
+      timeFormatArg,
+      langArg
+    ).hours;
+    const newDate = new Date(date.setHours(newHour));
+    updateDate(newDate);
   };
-  const hoursInputBlurHandler = (event: FocusEvent<HTMLInputElement>) => {
-    const hour = event.target.value === "" ? 0 : Number(event.target.value);
-    hoursInputChange(
-      getTime(new Date(date.setHours(hour)), timeFormatArg, langArg).hours
-    );
-    onHoursInputBlur && onHoursInputBlur(event);
-  };
-  const minutesInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const minutesInputHandler = (
+    event: FocusEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
+  ) => {
     const minute = event.target.value === "" ? 0 : Number(event.target.value);
-    minutesInputChange(minute);
-    onMinutesInputChange && onMinutesInputChange(event);
-  };
-  const minutesInputBlurHandler = (event: FocusEvent<HTMLInputElement>) => {
-    const minute = event.target.value === "" ? 0 : Number(event.target.value);
-    minutesInputChange(minute);
-    onMinutesInputBlur && onMinutesInputBlur(event);
+    updateDate(new Date(date.setMinutes(minute)));
   };
   const toggleMeridiem = () =>
     timeFormatArg === "12"
@@ -203,12 +178,9 @@ export const useDateTime = ({
       min: timeFormatArg === "12" ? 1 : 0,
       max: timeFormatArg === "12" ? 12 : 23,
       value: hoursInputValue,
-      onChange: hoursInputChangeHandler,
-      onBlur: hoursInputBlurHandler,
-      onFocus: (e) => {
-        setPickClockArrow("hours");
-        onHoursInputFocus && onHoursInputFocus(e);
-      },
+      onChange: hoursInputHandler,
+      onBlur: hoursInputHandler,
+      onFocus: () => setPickClockArrow("hours"),
     },
     minutes: {
       name: "minutesInput",
@@ -216,12 +188,9 @@ export const useDateTime = ({
       min: 0,
       max: 59,
       value: minutesInputValue,
-      onChange: minutesInputChangeHandler,
-      onBlur: minutesInputBlurHandler,
-      onFocus: (e) => {
-        setPickClockArrow("minutes");
-        onMinutesInputFocus && onMinutesInputFocus(e);
-      },
+      onChange: minutesInputHandler,
+      onBlur: minutesInputHandler,
+      onFocus: () => setPickClockArrow("minutes"),
     },
     date: {
       value: dateInputValue,
@@ -230,12 +199,27 @@ export const useDateTime = ({
       onBlur: handelDateInputBlur,
     },
     meridiem: {
-      onClick: (e) => {
-        toggleMeridiem();
-        onMeridiemButtonClick && onMeridiemButtonClick(e);
-      },
+      onClick: () => toggleMeridiem(),
     },
   };
+
+  const increaseHours = useCallback(
+    () => updateDate(new Date(date.setHours(date.getHours() + 1))),
+    []
+  );
+  const decreaseHours = useCallback(
+    () => updateDate(new Date(date.setHours(date.getHours() - 1))),
+    []
+  );
+  const increaseMinutes = useCallback(
+    () => updateDate(new Date(date.setMinutes(date.getMinutes() + 1))),
+    []
+  );
+  const decreaseMinutes = useCallback(
+    () => updateDate(new Date(date.setMinutes(date.getMinutes() - 1))),
+    []
+  );
+
   return {
     date,
     dayProps,
@@ -264,10 +248,10 @@ export const useDateTime = ({
     pickClockArrow,
     dateArg,
     setPickClockArrow,
-    // increaseHours,
-    // decreaseHours,
-    // increaseMinutes,
-    // decreaseMinutes,
+    increaseHours,
+    decreaseHours,
+    increaseMinutes,
+    decreaseMinutes,
     toggleMeridiem,
   };
 };
