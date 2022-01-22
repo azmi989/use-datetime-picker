@@ -189,20 +189,14 @@ export type InputPropd = {
     max: number;
     value: number;
     label: string;
-  } & Pick<
-    ComponentProps<"input">,
-    "onChange" | "onBlur" | "onFocus" | "onClick"
-  >;
+  } & Pick<ComponentProps<"input">, "onChange" | "onBlur" | "onClick">;
   minutes: {
     name: string;
     min: number;
     max: number;
     value: number;
     label: string;
-  } & Pick<
-    ComponentProps<"input">,
-    "onChange" | "onBlur" | "onFocus" | "onClick"
-  >;
+  } & Pick<ComponentProps<"input">, "onChange" | "onBlur" | "onClick">;
   date: {
     name: string;
     value: string;

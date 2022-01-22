@@ -143,6 +143,7 @@ export const useDateTime = ({
   const hoursInputHandler = (
     event: ChangeEvent<HTMLInputElement> | FocusEvent<HTMLInputElement>
   ) => {
+    setPickClockArrow("hours");
     const hour = event.target.value === "" ? 0 : Number(event.target.value);
     const newHour = getTime(
       new Date(date.setHours(hour)),
@@ -155,6 +156,7 @@ export const useDateTime = ({
   const minutesInputHandler = (
     event: FocusEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
   ) => {
+    setPickClockArrow("minutes");
     const minute = event.target.value === "" ? 0 : Number(event.target.value);
     updateDate(new Date(date.setMinutes(minute)));
   };
@@ -180,7 +182,7 @@ export const useDateTime = ({
       value: hoursInputValue,
       onChange: hoursInputHandler,
       onBlur: hoursInputHandler,
-      onFocus: () => setPickClockArrow("hours"),
+      onClick: () => setPickClockArrow("hours"),
     },
     minutes: {
       name: "minutesInput",
@@ -190,7 +192,7 @@ export const useDateTime = ({
       value: minutesInputValue,
       onChange: minutesInputHandler,
       onBlur: minutesInputHandler,
-      onFocus: () => setPickClockArrow("minutes"),
+      onClick: () => setPickClockArrow("minutes"),
     },
     date: {
       value: dateInputValue,
