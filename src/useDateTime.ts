@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState, FocusEvent } from "react";
+import { ChangeEvent, useState, FocusEvent } from "react";
 import { InputPropd } from "./index.types";
 import {
   formatDate,
@@ -35,96 +35,64 @@ export const useDateTime = ({
   const [dateInputValue, setDateInputValue] = useState(
     getDateInputValue(dateArg)
   );
-  const [hoursInputValue, setHoursInputValue] = useState(
-    getTime(dateArg, timeFormatArg, langArg).hours
-  );
-  const [minutesInputValue, setMinutesInputValue] = useState(
-    getTime(dateArg, timeFormatArg, langArg).minutes
-  );
   const [maxYear, setMaxYear] = useState(dateArg.getFullYear() + 10);
   const [minYear, setMinYear] = useState(dateArg.getFullYear() - 70);
   const [nextYearMaxed, setNextYearMaxed] = useState(false);
   const [prevYearMaxed, setPrevYearMaxed] = useState(false);
-  const getMonthDaysArray = useCallback(
-    () => Array.from(getMonthDaysFullList(date, langArg)),
-    [date, langArg]
-  );
+  const getMonthDaysArray = () =>
+    Array.from(getMonthDaysFullList(date, langArg));
   const [weekDays, setWeekDays] = useState(
     getWeekDays(dateArg, Array.from({ length: 7 }), langArg)
   );
   const [yearsList, setYearsList] = useState(getYearsList(maxYear, minYear));
-  const updateDate = useCallback(
-    (newDateArg: Date) => {
-      setDate(newDateArg);
-      setDayProps(getDay(newDateArg, langArg));
-      setMonthProps(getMonth(newDateArg, langArg));
-      setYearProps(getYear(newDateArg, langArg));
-      setTimeProps(getTime(newDateArg, timeFormatArg, langArg));
-      setFormatedDate(formatDate(newDateArg, dateFormatArg, langArg));
-      setNextYearMaxed(yearProps.nextYear === newDateArg?.getFullYear() + 1);
-      setPrevYearMaxed(yearProps.prevYear === newDateArg?.getFullYear() - 1);
-      setWeekDays(getWeekDays(newDateArg, weekDays, langArg));
-      setYearsList(getYearsList(maxYear, minYear));
-      setDateInputValue(getDateInputValue(newDateArg));
-      setHoursInputValue(getTime(newDateArg, timeFormatArg, langArg).hours);
-      setMinutesInputValue(getTime(newDateArg, timeFormatArg, langArg).minutes);
-    },
-    [
-      dateFormatArg,
-      langArg,
-      maxYear,
-      minYear,
-      timeFormatArg,
-      weekDays,
-      yearProps.nextYear,
-      yearProps.prevYear,
-    ]
-  );
-  const goToDay = useCallback(
-    (date: Date) => {
-      if (date.getDate() > monthProps.numberOfDays) {
-        console.error(`${date.getDate()} is not valid for this month`);
-        goToDay(new Date(date.setDate(date.getDate() - 1)));
-      } else {
-        updateDate(date);
-      }
-    },
-    [date]
-  );
-  const goToYear = useCallback(
-    (year: number) => updateDate(new Date(date.setFullYear(year))),
-    [date]
-  );
-  const goToMonth = useCallback(
-    (month: number) => updateDate(new Date(date.setMonth(month - 1))),
-    [date]
-  );
-  const goToNextYear = useCallback(() => {
+  const updateDate = (newDateArg: Date) => {
+    setDate(newDateArg);
+    setDayProps(getDay(newDateArg, langArg));
+    setMonthProps(getMonth(newDateArg, langArg));
+    setYearProps(getYear(newDateArg, langArg));
+    setTimeProps(getTime(newDateArg, timeFormatArg, langArg));
+    setFormatedDate(formatDate(newDateArg, dateFormatArg, langArg));
+    setNextYearMaxed(yearProps.nextYear === newDateArg?.getFullYear() + 1);
+    setPrevYearMaxed(yearProps.prevYear === newDateArg?.getFullYear() - 1);
+    setWeekDays(getWeekDays(newDateArg, weekDays, langArg));
+    setYearsList(getYearsList(maxYear, minYear));
+    setDateInputValue(getDateInputValue(newDateArg));
+  };
+  const goToDay = (date: Date) => {
+    if (date.getDate() > monthProps.numberOfDays) {
+      console.error(`${date.getDate()} is not valid for this month`);
+      goToDay(new Date(date.setDate(date.getDate() - 1)));
+    } else {
+      updateDate(date);
+    }
+  };
+  const goToYear = (year: number) =>
+    updateDate(new Date(date.setFullYear(year)));
+  const goToMonth = (month: number) =>
+    updateDate(new Date(date.setMonth(month - 1)));
+  const goToNextYear = () => {
     if (yearProps.year !== maxYear) {
       goToMonth(1);
       goToYear(yearProps.nextYear);
     }
-  }, [date]);
-  const goToPrevYear = useCallback(() => {
+  };
+  const goToPrevYear = () => {
     if (yearProps.year !== minYear) {
       goToMonth(12);
       goToYear(yearProps.prevYear);
     }
-  }, [date]);
-  const goToNextMonth = useCallback(() => {
+  };
+  const goToNextMonth = () => {
     monthProps.monthNumber === 12
       ? goToNextYear()
       : goToMonth(monthProps.nextMonthNumber);
-  }, [date]);
-  const goToPrevMonth = useCallback(() => {
+  };
+  const goToPrevMonth = () => {
     monthProps.monthNumber === 1
       ? goToPrevYear()
       : goToMonth(monthProps.prevMonthNumber);
-  }, [date]);
-  const selectDay = useCallback(
-    (day: number) => goToDay(new Date(date.setDate(day))),
-    [date]
-  );
+  };
+  const selectDay = (day: number) => goToDay(new Date(date.setDate(day)));
   const getDateFromInputEvent = (event: string) =>
     event.split("/").map((item) => parseInt(item));
   const handelDateInputChangeHandler = (event: string, update?: boolean) => {
@@ -179,20 +147,18 @@ export const useDateTime = ({
       label: "Hours",
       min: timeFormatArg === "12" ? 1 : 0,
       max: timeFormatArg === "12" ? 12 : 23,
-      value: hoursInputValue,
+      value: timeProps.hours,
       onChange: hoursInputHandler,
       onBlur: hoursInputHandler,
-      onClick: () => setPickClockArrow("hours"),
     },
     minutes: {
       name: "minutesInput",
       label: "Minutes",
       min: 0,
       max: 59,
-      value: minutesInputValue,
+      value: timeProps.minutes,
       onChange: minutesInputHandler,
       onBlur: minutesInputHandler,
-      onClick: () => setPickClockArrow("minutes"),
     },
     date: {
       value: dateInputValue,
@@ -205,22 +171,22 @@ export const useDateTime = ({
     },
   };
 
-  const increaseHours = useCallback(
-    () => updateDate(new Date(date.setHours(date.getHours() + 1))),
-    []
-  );
-  const decreaseHours = useCallback(
-    () => updateDate(new Date(date.setHours(date.getHours() - 1))),
-    []
-  );
-  const increaseMinutes = useCallback(
-    () => updateDate(new Date(date.setMinutes(date.getMinutes() + 1))),
-    []
-  );
-  const decreaseMinutes = useCallback(
-    () => updateDate(new Date(date.setMinutes(date.getMinutes() - 1))),
-    []
-  );
+  const increaseHours = () => {
+    setPickClockArrow("hours");
+    updateDate(new Date(date.setHours(date.getHours() + 1)));
+  };
+  const decreaseHours = () => {
+    setPickClockArrow("hours");
+    updateDate(new Date(date.setHours(date.getHours() - 1)));
+  };
+  const increaseMinutes = () => {
+    setPickClockArrow("minutes");
+    updateDate(new Date(date.setMinutes(date.getMinutes() + 1)));
+  };
+  const decreaseMinutes = () => {
+    setPickClockArrow("minutes");
+    updateDate(new Date(date.setMinutes(date.getMinutes() - 1)));
+  };
 
   return {
     date,

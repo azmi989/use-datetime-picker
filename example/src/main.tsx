@@ -19,6 +19,11 @@ export const App = () => {
     date,
     timeProps,
     toggleMeridiem,
+    increaseHours,
+    increaseMinutes,
+    decreaseHours,
+    decreaseMinutes,
+    pickClockArrow,
   } = useDateTimePickerContext();
   // useInterval(() => increaseHours(), 1000);
   useEffect(() => {
@@ -32,10 +37,28 @@ export const App = () => {
             <button onClick={goToPrevMonth}>{"<"}</button>
             <input {...inputsProps.date} />
             <div className="numberInput">
-              <input type="number" {...inputsProps.hours} />
+              <input
+                type="number"
+                {...inputsProps.hours}
+                style={{
+                  backgroundColor:
+                    pickClockArrow === "hours" ? "red" : undefined,
+                }}
+              />
+              <button onClick={increaseHours}>+</button>
+              <button onClick={decreaseHours}>-</button>
             </div>
             <div className="numberInput">
-              <input type="number" {...inputsProps.minutes} />
+              <input
+                type="number"
+                {...inputsProps.minutes}
+                style={{
+                  backgroundColor:
+                    pickClockArrow === "minutes" ? "red" : undefined,
+                }}
+              />
+              <button onClick={increaseMinutes}>+</button>
+              <button onClick={decreaseMinutes}>-</button>
             </div>
             <button onClick={toggleMeridiem}>{timeProps.meridiem}</button>
             <button onClick={goToNextMonth}>{">"}</button>
