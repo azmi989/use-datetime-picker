@@ -19,7 +19,7 @@ export const useDateTime = ({
   langArg = "default",
   timeFormatArg = "12",
 }: DateTimeHookProps) => {
-  const [date, setDate] = useState(dateArg);
+  const date = dateArg;
   const [dayProps, setDayProps] = useState(getDay(dateArg, langArg));
   const [monthProps, setMonthProps] = useState(getMonth(dateArg, langArg));
   const [yearProps, setYearProps] = useState(getYear(dateArg, langArg));
@@ -46,7 +46,6 @@ export const useDateTime = ({
   );
   const [yearsList, setYearsList] = useState(getYearsList(maxYear, minYear));
   const updateDate = (newDateArg: Date) => {
-    setDate(newDateArg);
     setDayProps(getDay(newDateArg, langArg));
     setMonthProps(getMonth(newDateArg, langArg));
     setYearProps(getYear(newDateArg, langArg));
@@ -214,7 +213,6 @@ export const useDateTime = ({
     goToYear,
     goToMonth,
     pickClockArrow,
-    dateArg,
     setPickClockArrow,
     increaseHours,
     decreaseHours,
